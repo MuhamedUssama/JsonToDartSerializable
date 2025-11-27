@@ -29,6 +29,7 @@ export class JsonToDartConverter {
         const type = this.getDartType(value, key, classes);
         const fieldName = this.toCamelCase(key);
         
+        fields.push(`  @JsonKey(name: '${key}')`);
         fields.push(`  final ${type} ${fieldName};`);
         constructorParams.push(`    required this.${fieldName},`);
       }
