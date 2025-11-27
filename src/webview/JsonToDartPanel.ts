@@ -62,7 +62,7 @@ export class JsonToDartPanel {
   private async _handleGenerate(fileName: string, className: string, json: string) {
     try {
       const converter = new JsonToDartConverter();
-      const dartCode = converter.convert(json, className);
+      const dartCode = converter.convert(json, className, fileName);
       
       const fileManager = new FileManager();
       await fileManager.createDartFile(this._folderPath, fileName, dartCode);

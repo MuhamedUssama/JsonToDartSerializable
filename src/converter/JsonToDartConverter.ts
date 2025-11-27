@@ -1,5 +1,5 @@
 export class JsonToDartConverter {
-  convert(json: string, className: string): string {
+  convert(json: string, className: string, fileName: string): string {
     try {
       const parsed = JSON.parse(json);
       const classes: string[] = [];
@@ -7,7 +7,8 @@ export class JsonToDartConverter {
       this.generateClass(parsed, className, classes, usedNames);
       
       // Add imports and part directive
-      const header = `import 'package:json_annotation/json_annotation.dart';\n\npart '${this.toSnakeCase(className)}.g.dart';\n\n`;
+      const cleanFileName = fileName.endsWith('.dart') ? fileName.substring(0, fileName.length - 5) : fileName;
+      const header = `import 'package:json_annotation/json_annotation.dart';\n\npart '${cleanFileName}.g.dart';\n\n`;
       
       return header + classes.reverse().join('\n\n');
     } catch (e) {
