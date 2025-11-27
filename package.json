@@ -16,8 +16,21 @@
       {
         "command": "jsontodartserializable.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "jsontodartserializable.generateDart",
+        "title": "Dart Class File from JSON"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "jsontodartserializable.generateDart",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
