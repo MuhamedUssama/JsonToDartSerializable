@@ -19,7 +19,7 @@
       },
       {
         "command": "jsontodartserializable.generateDart",
-        "title": "Dart Class File from JSON"
+        "title": "JSON to dart with JSON Serializable"
       }
     ],
     "menus": {
@@ -27,7 +27,7 @@
         {
           "command": "jsontodartserializable.generateDart",
           "when": "explorerResourceIsFolder",
-          "group": "navigation"
+          "group": "1_modification"
         }
       ]
     }
