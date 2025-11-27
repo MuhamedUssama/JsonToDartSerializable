@@ -3,7 +3,8 @@ export class JsonToDartConverter {
     try {
       const parsed = JSON.parse(json);
       const classes: string[] = [];
-      this.generateClass(parsed, className, classes);
+      const usedNames = new Set<string>();
+      this.generateClass(parsed, className, classes, usedNames);
       
       // Add imports and part directive
       const header = `import 'package:json_annotation/json_annotation.dart';\n\npart '${this.toSnakeCase(className)}.g.dart';\n\n`;
@@ -14,19 +15,25 @@ export class JsonToDartConverter {
     }
   }
 
-  private generateClass(obj: any, className: string, classes: string[]) {
+  private generateClass(obj: any, proposedName: string, classes: string[], usedNames: Set<string>, parentName: string = ''): string {
     if (typeof obj !== 'object' || obj === null) {
-      return;
+      return 'dynamic';
     }
 
-    let classContent = `@JsonSerializable()\nclass ${className} {\n`;
+    let finalName = proposedName;
+    if (usedNames.has(finalName)) {
+      finalName = parentName + finalName;
+    }
+    usedNames.add(finalName);
+
+    let classContent = `@JsonSerializable()\nclass ${finalName} {\n`;
     const fields: string[] = [];
     const constructorParams: string[] = [];
 
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
-        const type = this.getDartType(value, key, classes);
+        const type = this.getDartType(value, key, classes, usedNames, finalName);
         const fieldName = this.toCamelCase(key);
         
         fields.push(`  @JsonKey(name: '${key}')`);
@@ -36,15 +43,16 @@ export class JsonToDartConverter {
     }
 
     classContent += fields.join('\n') + '\n\n';
-    classContent += `  ${className}({\n${constructorParams.join('\n')}\n  });\n\n`;
-    classContent += `  factory ${className}.fromJson(Map<String, dynamic> json) => _$${className}FromJson(json);\n`;
-    classContent += `  Map<String, dynamic> toJson() => _$${className}ToJson(this);\n`;
+    classContent += `  ${finalName}({\n${constructorParams.join('\n')}\n  });\n\n`;
+    classContent += `  factory ${finalName}.fromJson(Map<String, dynamic> json) => _$${finalName}FromJson(json);\n`;
+    classContent += `  Map<String, dynamic> toJson() => _$${finalName}ToJson(this);\n`;
     classContent += `}`;
 
     classes.push(classContent);
+    return finalName;
   }
 
-  private getDartType(value: any, key: string, classes: string[]): string {
+  private getDartType(value: any, key: string, classes: string[], usedNames: Set<string>, parentName: string): string {
     if (value === null) {
       return 'dynamic';
     }
@@ -58,14 +66,13 @@ export class JsonToDartConverter {
       return 'bool';
     } else if (Array.isArray(value)) {
       if (value.length > 0) {
-        const innerType = this.getDartType(value[0], key, classes);
+        const innerType = this.getDartType(value[0], key, classes, usedNames, parentName);
         return `List<${innerType}>`;
       }
       return 'List<dynamic>';
     } else if (type === 'object') {
       const nestedClassName = this.capitalize(this.toCamelCase(key));
-      this.generateClass(value, nestedClassName, classes);
-      return nestedClassName;
+      return this.generateClass(value, nestedClassName, classes, usedNames, parentName);
     }
     
     return 'dynamic';
