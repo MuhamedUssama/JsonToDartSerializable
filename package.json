@@ -1,22 +1,38 @@
 {
   "name": "jsontodartserializable",
-  "displayName": "JsonToDartSerializable",
-  "description": "Convert JSON to Dart class with json_serializable support",
-  "version": "0.0.1",
+  "displayName": "JSON to Dart (JSON Serializable)",
+  "description": "Convert JSON to Dart class with json_serializable support instantly.",
+  "version": "1.0.0",
+  "publisher": "MohamedOsama",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MuhamedUssama/JsonToDartSerializable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MuhamedUssama/JsonToDartSerializable/issues"
+  },
+  "icon": "images/icon.png",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.90.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "dart",
+    "flutter",
+    "json",
+    "serializable",
+    "model",
+    "generator",
+    "convert"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "jsontodartserializable.helloWorld",
-        "title": "Hello World"
-      },
       {
         "command": "jsontodartserializable.generateDart",
         "title": "JSON to dart with JSON Serializable"

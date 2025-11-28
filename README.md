@@ -1,71 +1,151 @@
-# jsontodartserializable README
+# JSON to Dart (with JSON Serializable) 🚀
 
-This is the README for your extension "jsontodartserializable". After writing up a brief description, we recommend including the following sections.
+Generate robust, type-safe Dart data classes from raw JSON instantly.
+Designed for Flutter developers who use **`json_serializable`**, featuring a powerful built-in editor and smart name conflict resolution.
 
-## Features
+![Extension Icon](images/icon.png)
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## ✨ Key Features
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+- **⚡ Instant Generation:** Right-click any folder in your Explorer and generate files immediately.
+- **🛠 json_serializable Support:** Generates classes ready for `build_runner`, including:
+  - `@JsonSerializable()` annotation.
+  - `@JsonKey(name: 'key')` for every field (runtime safety).
+  - `fromJson` & `toJson` factory methods.
+  - Correct `part 'filename.g.dart';` directive based on file name.
+- **🧠 Smart Name Handling:** Automatically resolves name collisions for nested objects using a **Parent Prefixing Strategy** (e.g., `UserStats` instead of duplicate `Stats`).
+- **💻 Built-in Monaco Editor:**
+  - Full-featured JSON editor (like VS Code).
+  - Syntax Highlighting & Error Validation.
+  - **Auto-Formatting** button to pretty-print your JSON.
+  - Line numbers and folding ranges.
+- **🛡️ Null Safety:** Generates modern Dart code with `final` fields and `required` parameters.
 
 ---
 
-## Following extension guidelines
+## 📸 Usage
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+### 1. Right-click on a target folder
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+Select **"JSON to dart with JSON Serializable"** from the context menu.
 
-## Working with Markdown
+![Context Menu Screenshot](images/context_menu.png)
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+### 2. Enter Details & Paste JSON
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+A modern editor window will open. Enter your file name, class name, and paste your JSON.
+Use the **Format** button to clean up your JSON input.
 
-## For more information
+![Editor Screenshot](images/editor_window.png)
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+### 3. Generate!
 
-**Enjoy!**
+Click generate, and the extension will create the `.dart` file inside the selected folder.
+
+---
+
+## 📦 Required Dependencies
+
+Since this extension generates code for `json_serializable`, make sure your `pubspec.yaml` has the following dependencies:
+
+```yaml
+dependencies:
+  json_annotation: ^4.8.0
+
+dev_dependencies:
+  build_runner: ^2.4.0
+  json_serializable: ^6.7.0
+```
+
+Or run this command in your terminal:
+
+```bash
+flutter pub add json_annotation
+flutter pub add --dev build_runner json_serializable
+```
+
+Don't forget to run the builder to generate the .g.dart files:
+
+```bash
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+---
+
+## 📝 Example Output
+
+Input JSON:
+
+```json
+{
+  "name": "John Doe",
+  "age": 30,
+  "is_active": true,
+  "stats": {
+    "score": 100,
+    "level": 5
+  }
+}
+```
+
+---
+
+## Generated Dart Code:
+
+```dart
+import 'package:json_annotation/json_annotation.dart';
+part 'user_model.g.dart';
+
+@JsonSerializable()
+class UserModel {
+  @JsonKey(name: 'name')
+  final String name;
+  @JsonKey(name: 'age')
+  final int age;
+  @JsonKey(name: 'is_active')
+  final bool isActive;
+  @JsonKey(name: 'stats')
+  final Stats stats;
+
+  UserModel({
+    required this.name,
+    required this.age,
+    required this.isActive,
+    required this.stats,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+}
+
+@JsonSerializable()
+class Stats {
+  @JsonKey(name: 'score')
+  final int score;
+  @JsonKey(name: 'level')
+  final int level;
+
+  Stats({
+    required this.score,
+    required this.level,
+  });
+
+  factory Stats.fromJson(Map<String, dynamic> json) => _$StatsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StatsToJson(this);
+}
+```
+
+---
+
+## 👨‍💻 Author
+
+[Mohamed Osama](https://github.com/MuhamedUssama)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
