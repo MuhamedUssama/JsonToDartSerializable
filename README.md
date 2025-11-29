@@ -50,11 +50,11 @@ Since this extension generates code for `json_serializable`, make sure your `pub
 
 ```yaml
 dependencies:
-  json_annotation: ^4.8.0
+  json_annotation:
 
 dev_dependencies:
-  build_runner: ^2.4.0
-  json_serializable: ^6.7.0
+  build_runner:
+  json_serializable:
 ```
 
 Or run this command in your terminal:
@@ -72,7 +72,7 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 ---
 
-## 📝 Example Output
+## 📝 Example Input
 
 Input JSON:
 
