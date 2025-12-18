@@ -2,7 +2,7 @@
   "name": "jsontodartserializable",
   "displayName": "JSON to Dart (JSON Serializable)",
   "description": "Convert JSON to Dart class with json_serializable support instantly.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "MohamedOsama",
   "repository": {
     "type": "git",
