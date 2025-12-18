@@ -78,6 +78,16 @@ export function getWebviewContent(webview: vscode.Webview): string {
             margin-top: 5px;
             display: none;
         }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -104,6 +114,10 @@ export function getWebviewContent(webview: vscode.Webview): string {
         <div class="button-group">
             <button id="formatBtn" class="secondary">Format JSON</button>
             <button id="generateBtn">Generate</button>
+            <div class="checkbox-container">
+                <input type="checkbox" id="nullableCheckbox" checked>
+                <label for="nullableCheckbox" style="font-weight: normal; margin: 0;">Nullable Fields</label>
+            </div>
         </div>
     </div>
 
@@ -135,6 +149,7 @@ export function getWebviewContent(webview: vscode.Webview): string {
         const formatBtn = document.getElementById('formatBtn');
         const fileNameInput = document.getElementById('fileName');
         const classNameInput = document.getElementById('className');
+        const nullableCheckbox = document.getElementById('nullableCheckbox');
         const errorMessage = document.getElementById('errorMessage');
 
         formatBtn.addEventListener('click', () => {
@@ -167,7 +182,8 @@ export function getWebviewContent(webview: vscode.Webview): string {
                 command: 'generate',
                 fileName: fileName,
                 className: className,
-                json: json
+                json: json,
+                isNullable: nullableCheckbox.checked
             });
         });
     </script>

@@ -1,10 +1,10 @@
 export class JsonToDartConverter {
-  convert(json: string, className: string, fileName: string): string {
+  convert(json: string, className: string, fileName: string, isNullable: boolean = true): string {
     try {
       const parsed = JSON.parse(json);
       const classes: string[] = [];
       const usedNames = new Set<string>();
-      this.generateClass(parsed, className, classes, usedNames);
+      this.generateClass(parsed, className, classes, usedNames, '', isNullable);
       
       // Add imports and part directive
       const cleanFileName = fileName.endsWith('.dart') ? fileName.substring(0, fileName.length - 5) : fileName;
@@ -16,7 +16,7 @@ export class JsonToDartConverter {
     }
   }
 
-  private generateClass(obj: any, proposedName: string, classes: string[], usedNames: Set<string>, parentName: string = ''): string {
+  private generateClass(obj: any, proposedName: string, classes: string[], usedNames: Set<string>, parentName: string = '', isNullable: boolean): string {
     if (typeof obj !== 'object' || obj === null) {
       return 'dynamic';
     }
@@ -34,12 +34,14 @@ export class JsonToDartConverter {
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
-        const type = this.getDartType(value, key, classes, usedNames, finalName);
+        const type = this.getDartType(value, key, classes, usedNames, finalName, isNullable);
         const fieldName = this.toCamelCase(key);
+        const nullableSuffix = isNullable ? '?' : '';
+        const requiredPrefix = isNullable ? '' : 'required ';
         
         fields.push(`  @JsonKey(name: '${key}')`);
-        fields.push(`  final ${type} ${fieldName};`);
-        constructorParams.push(`    required this.${fieldName},`);
+        fields.push(`  final ${type}${nullableSuffix} ${fieldName};`);
+        constructorParams.push(`    ${requiredPrefix}this.${fieldName},`);
       }
     }
 
@@ -53,7 +55,7 @@ export class JsonToDartConverter {
     return finalName;
   }
 
-  private getDartType(value: any, key: string, classes: string[], usedNames: Set<string>, parentName: string): string {
+  private getDartType(value: any, key: string, classes: string[], usedNames: Set<string>, parentName: string, isNullable: boolean): string {
     if (value === null) {
       return 'dynamic';
     }
@@ -67,13 +69,14 @@ export class JsonToDartConverter {
       return 'bool';
     } else if (Array.isArray(value)) {
       if (value.length > 0) {
-        const innerType = this.getDartType(value[0], key, classes, usedNames, parentName);
-        return `List<${innerType}>`;
+        const innerType = this.getDartType(value[0], key, classes, usedNames, parentName, isNullable);
+        const nullableSuffix = isNullable ? '?' : '';
+        return `List<${innerType}${nullableSuffix}>`;
       }
       return 'List<dynamic>';
     } else if (type === 'object') {
       const nestedClassName = this.capitalize(this.toCamelCase(key));
-      return this.generateClass(value, nestedClassName, classes, usedNames, parentName);
+      return this.generateClass(value, nestedClassName, classes, usedNames, parentName, isNullable);
     }
     
     return 'dynamic';
