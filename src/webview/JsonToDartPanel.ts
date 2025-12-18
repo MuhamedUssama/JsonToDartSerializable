@@ -13,7 +13,7 @@ export class JsonToDartPanel {
     this._panel = panel;
     this._folderPath = folderPath;
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-    this._panel.webview.html = getWebviewContent(this._panel.webview);
+    this._panel.webview.html = getWebviewContent(this._panel.webview, extensionUri);
     this._setWebviewMessageListener(this._panel.webview);
   }
 
@@ -50,7 +50,7 @@ export class JsonToDartPanel {
 
         switch (command) {
           case 'generate':
-            await this._handleGenerate(message.fileName, message.className, message.json);
+            await this._handleGenerate(message.fileName, message.className, message.json, message.isNullable);
             return;
         }
       },
@@ -59,10 +59,10 @@ export class JsonToDartPanel {
     );
   }
 
-  private async _handleGenerate(fileName: string, className: string, json: string) {
+  private async _handleGenerate(fileName: string, className: string, json: string, isNullable: boolean) {
     try {
       const converter = new JsonToDartConverter();
-      const dartCode = converter.convert(json, className, fileName);
+      const dartCode = converter.convert(json, className, fileName, isNullable);
       
       const fileManager = new FileManager();
       await fileManager.createDartFile(this._folderPath, fileName, dartCode);

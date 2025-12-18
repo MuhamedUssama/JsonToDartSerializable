@@ -8,18 +8,20 @@ Designed for Flutter developers who use **`json_serializable`**, featuring a pow
 ## ✨ Key Features
 
 - **⚡ Instant Generation:** Right-click any folder in your Explorer and generate files immediately.
+- **🛡️ Flexible Null Safety:** **[NEW]** Toggle between **Nullable** (`String?`) and **Non-Nullable** (`required String`) fields with a single click.
 - **🛠 json_serializable Support:** Generates classes ready for `build_runner`, including:
   - `@JsonSerializable()` annotation.
   - `@JsonKey(name: 'key')` for every field (runtime safety).
   - `fromJson` & `toJson` factory methods.
   - Correct `part 'filename.g.dart';` directive based on file name.
-- **🧠 Smart Name Handling:** Automatically resolves name collisions for nested objects using a **Parent Prefixing Strategy** (e.g., `UserStats` instead of duplicate `Stats`).
+- **🧠 Advanced Name Handling:** automatically handles:
+  - Name collisions for nested objects (e.g., `UserStats` instead of duplicate `Stats`).
+  - **Special characters** (e.g., `@meta` → `meta`).
+  - **Reserved keywords** (e.g., `class` → `kClass`).
+  - **Leading numbers** (e.g., `1st_place` → `n1stPlace`).
 - **💻 Built-in Monaco Editor:**
-  - Full-featured JSON editor (like VS Code).
-  - Syntax Highlighting & Error Validation.
+  - Full-featured JSON editor with Syntax Highlighting & Validation.
   - **Auto-Formatting** button to pretty-print your JSON.
-  - Line numbers and folding ranges.
-- **🛡️ Null Safety:** Generates modern Dart code with `final` fields and `required` parameters.
 
 ---
 
@@ -33,8 +35,12 @@ Select **"JSON to dart with JSON Serializable"** from the context menu.
 
 ### 2. Enter Details & Paste JSON
 
-A modern editor window will open. Enter your file name, class name, and paste your JSON.
-Use the **Format** button to clean up your JSON input.
+A modern editor window will open.
+
+1. Enter your **File Name** and **Class Name**.
+2. Paste your JSON.
+3. Check **"Nullable Fields"** if you want optional variables (e.g., `String?`), or uncheck it for strict mode (e.g., `required String`).
+4. Use the **Format** button to clean up your JSON input.
 
 ![Editor Screenshot](images/editor_window.png)
 
@@ -50,11 +56,11 @@ Since this extension generates code for `json_serializable`, make sure your `pub
 
 ```yaml
 dependencies:
-  json_annotation: ^4.8.0
+  json_annotation:
 
 dev_dependencies:
-  build_runner: ^2.4.0
-  json_serializable: ^6.7.0
+  build_runner:
+  json_serializable:
 ```
 
 Or run this command in your terminal:
@@ -72,7 +78,7 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 ---
 
-## 📝 Example Output
+## 📝 Example Input
 
 Input JSON:
 
@@ -143,6 +149,12 @@ class Stats {
 ## 👨‍💻 Author
 
 [Mohamed Osama](https://github.com/MuhamedUssama)
+
+---
+
+## 🐞 Issues & Feedback
+
+Found a bug or have a feature request? Please open an issue on our [GitHub Repository](https://github.com/MuhamedUssama/JsonToDartSerializable/issues).
 
 ---
 
