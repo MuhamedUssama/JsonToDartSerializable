@@ -36,8 +36,10 @@ export class JsonToDartConverter {
         const value = obj[key];
         const type = this.getDartType(value, key, classes, usedNames, finalName, isNullable);
         const fieldName = this.toCamelCase(key);
-        const nullableSuffix = isNullable ? '?' : '';
-        const requiredPrefix = isNullable ? '' : 'required ';
+        // Correctly handle dynamic: dynamic? is valid but redundant/bad style. Prefer dynamic.
+        const isDynamic = type === 'dynamic';
+        const nullableSuffix = (isNullable && !isDynamic) ? '?' : '';
+        const requiredPrefix = (isNullable || isDynamic) ? '' : 'required ';
         
         fields.push(`  @JsonKey(name: '${key}')`);
         fields.push(`  final ${type}${nullableSuffix} ${fieldName};`);

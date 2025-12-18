@@ -13,7 +13,7 @@ export class JsonToDartPanel {
     this._panel = panel;
     this._folderPath = folderPath;
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-    this._panel.webview.html = getWebviewContent(this._panel.webview);
+    this._panel.webview.html = getWebviewContent(this._panel.webview, extensionUri);
     this._setWebviewMessageListener(this._panel.webview);
   }
 
