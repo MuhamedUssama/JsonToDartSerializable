@@ -80,7 +80,47 @@ export class JsonToDartConverter {
   }
 
   private toCamelCase(str: string): string {
-    return str.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+    // 1. Replace separators with underscores
+    let s = str.replace(/[-\.\s]/g, '_');
+
+    // 2. Sanitize: remove non-alphanumeric chars (keep underscores for snake_case)
+    s = s.replace(/[^a-zA-Z0-9_]/g, '');
+    
+    // 3. Remove leading underscores
+    s = s.replace(/^_+/, '');
+
+    // 4. Convert snake_case to camelCase
+    s = s.replace(/_([a-zA-Z0-9])/g, (g) => g[1].toUpperCase());
+    
+    // 5. Ensure first char is lowercase
+    if (s.length > 0) {
+      s = s.charAt(0).toLowerCase() + s.slice(1);
+    } else {
+      return 'undefined'; // Fallback for empty strings
+    }
+
+    // 6. Handle leading digits
+    if (/^\d/.test(s)) {
+      s = 'n' + s;
+    }
+
+    // 7. Handle reserved keywords
+    const keywords = [
+      'abstract', 'as', 'assert', 'async', 'await', 'break', 'case', 'catch',
+      'class', 'const', 'continue', 'covariant', 'default', 'deferred', 'do',
+      'dynamic', 'else', 'enum', 'export', 'extends', 'extension', 'external',
+      'factory', 'false', 'final', 'finally', 'for', 'function', 'get', 'hide',
+      'if', 'implements', 'import', 'in', 'interface', 'is', 'late', 'library',
+      'mixin', 'new', 'null', 'on', 'operator', 'part', 'required', 'rethrow',
+      'return', 'set', 'show', 'static', 'super', 'switch', 'sync', 'this',
+      'throw', 'true', 'try', 'typedef', 'var', 'void', 'while', 'with', 'yield'
+    ];
+
+    if (keywords.includes(s)) {
+      s = 'k' + s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    return s;
   }
 
   private toSnakeCase(str: string): string {
